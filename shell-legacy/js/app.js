@@ -31,7 +31,10 @@
         if (!key || !current) { return; }
         e.preventDefault();
         if (current.onKey(key)) { return; }
-        if (key === 'back') { ui.app.back(); }
+        if (key === 'back') {
+          if (!stack.length) { try { window.close(); } catch (err) { /* ignore */ } return; }
+          ui.app.back();
+        }
       });
       activate(firstName);
     }

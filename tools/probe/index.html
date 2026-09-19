@@ -24,12 +24,25 @@
     ['CSS variables', !!(window.CSS && CSS.supports && CSS.supports('--a', '0'))],
     ['object-fit', 'objectFit' in document.body.style],
     ['position: sticky', cssOk('position', 'sticky')],
-    ['WebP <img>', true]
+    ['WebP <img>', null]
   ];
   var rows = '';
   for (var i = 0; i < tests.length; i++) {
-    rows += '<tr><td>' + tests[i][0] + '</td><td class="' + (tests[i][1] ? 'ok' : 'no') + '">' + (tests[i][1] ? 'yes' : 'NO') + '</td></tr>';
+    if (tests[i][1] === null) {
+      rows += '<tr><td>' + tests[i][0] + '</td><td id="webp-cell">checking...</td></tr>';
+    } else {
+      rows += '<tr><td>' + tests[i][0] + '</td><td class="' + (tests[i][1] ? 'ok' : 'no') + '">' + (tests[i][1] ? 'yes' : 'NO') + '</td></tr>';
+    }
   }
   document.getElementById('t').innerHTML = rows;
+  function webpResult(ok) {
+    var cell = document.getElementById('webp-cell');
+    cell.className = ok ? 'ok' : 'no';
+    cell.textContent = ok ? 'yes' : 'NO';
+  }
+  var img = new Image();
+  img.onload = function () { webpResult(img.width > 0); };
+  img.onerror = function () { webpResult(false); };
+  img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
 }());
 </script></body></html>

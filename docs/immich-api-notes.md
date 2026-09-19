@@ -70,6 +70,18 @@ curl -s -D - -o /dev/null -H "Origin: null" -H "x-api-key: KEY" URL/api/users/me
 
 ---
 
+### Check 7 — CORS preflight
+**Command:**
+```bash
+curl -s -D - -o /dev/null -X OPTIONS -H "Origin: null" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: x-api-key,content-type" URL/api/search/metadata
+```
+**Status:** UNVERIFIED - to be run by the user
+**Expected Result:** The response contains `access-control-allow-origin`, `access-control-allow-methods` and `access-control-allow-headers` (allow-headers must include `x-api-key` and `content-type`)
+**Purpose:** The app's requests always force a preflight (x-api-key header, JSON POST); Check 6 (plain GET) cannot detect a missing preflight answer.
+**If it fails:** fix the proxy / Immich CORS configuration; the app cannot work without it.
+
+---
+
 ## If a Check Fails
 
 ### If Check 4 (`apiKey=` query parameter) fails (401/404):
@@ -80,7 +92,9 @@ The thumbnail endpoint may not accept API keys as query parameters. In this case
 
 The current implementation assumes query parameter authentication is available.
 
-### If Check 6 (CORS header) fails:
+**Effort differs by cause.** If a different query-param name or path shape is needed, it is a ~3-line change confined to `media()` in `core/immich-client.js`. If `apiKey=` on media URLs fails and the server requires header auth for media, it is NOT a three-line change: the media URL builders (`thumbnailUrl`/`viewerUrl` in `core/immich-client.js`) would have to become async (XHR blob + `URL.createObjectURL` with revocation), touching `shell-legacy/js/view-albums.js`, `view-album.js`, `view-viewer.js` and `shell-enact/src/views/MediaGrid.js`, `Viewer.js`.
+
+### If Check 6 or Check 7 (CORS) fails:
 The reverse proxy or Immich server must be configured to:
 1. Allow `Origin: null` (for TV app context)
 2. Return `Access-Control-Allow-Origin` header in responses

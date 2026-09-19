@@ -7,6 +7,7 @@ Each step lists what to do and what you should see. Stop at the first failure an
 - [ ] You created an API key in Immich (Account Settings > API Keys).
 - [ ] TV is in Developer Mode and `ares-device -i tv` works (see README).
 - [ ] Immich API checks: run the commands in docs/immich-api-notes.md once against your server (they are marked UNVERIFIED) — media thumbnails depend on the `apiKey` query parameter.
+- [ ] CORS: the server/proxy answers the preflight in docs/immich-api-notes.md (Check 7) — otherwise Setup shows 'Cannot reach the server...'.
 - [ ] (Once) install the probe app to record the TV's engine: `ares-package tools/probe -o build && ares-install -d tv build/com.immich.webos.probe_0.0.1_all.ipk && ares-launch -d tv com.immich.webos.probe`. Write down the `Chrome/NN` number and every "NO".
 
 ## 1. Install
@@ -30,7 +31,7 @@ Also check: a wrong key shows "The server rejected the API key."; a wrong addres
 Scroll with the arrows; OK opens an album; Back returns to Albums with the same album highlighted.
 
 ## 4. Photos
-Inside an album: thumbnails load while scrolling; OK opens a photo; Left/Right change photo; Back returns with the last viewed photo highlighted. Try **All photos** on the Albums screen and scroll to the end: more photos load.
+Inside an album: thumbnails load while scrolling; OK opens a photo; Left/Right change photo; Back returns with the last viewed photo highlighted. Try **All photos** on the Albums screen and scroll to the end: more photos load. Blank grey tiles instead of thumbnails mean the media URL check failed: re-run Check 4 in docs/immich-api-notes.md. Opening a single album loads the whole album at once; use All photos to test large-library paging (step 6).
 
 ## 5. View settings
 Albums > Settings: set Layout to List, Columns to 3, Photo size to Large; Back. Expect the layout to change immediately. Close the app (Home) and reopen it: settings are kept.

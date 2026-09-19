@@ -11,7 +11,7 @@ Both builds share `core/` (Immich client, settings, auth). Scope: albums and pho
 
 ## Develop
 
-Requirements: Node 18+, `npm install -g @webos-tools/cli` (gives `ares-*`), `npm install`.
+Requirements: Node 22.2+, `npm install -g @webos-tools/cli` (gives `ares-*`), `npm install`.
 
 ```bash
 npm test                 # lint (ES5), Chromium-38 API gate, unit tests
@@ -54,6 +54,8 @@ Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
 2. On the TV: Setup screen > Server address (`https://photos.example.com` or `http://192.168.1.10:2283`) and API key, entered with the on-screen keyboard (D-pad: arrows move, OK types; "TV keyboard" opens the TV's own).
 3. "Cannot reach the server" means the request failed before any HTTP answer. The browser cannot tell which of these it is: wrong address, TV offline, **HTTPS certificate not trusted by the TV** (2016-17 TVs have an old certificate store; some Let's Encrypt chains fail), or the server blocking the app's `Origin: null` (CORS). Quick test: try `http://<lan-ip>:2283`; if that works the cause is certificate or proxy CORS.
 
+**CORS.** The packaged app runs from `file://`, so its requests carry `Origin: null`, and they send the `x-api-key` header and JSON POSTs, which make the browser issue a CORS preflight (OPTIONS) first. The Immich server or the reverse proxy in front of it must answer that preflight and allow this origin, the methods GET/POST/OPTIONS and the headers `x-api-key` and `content-type`. Verify with Check 7 in docs/immich-api-notes.md. The old prototype docs mentioned an environment variable named `IMMICH_CORS_ALLOWED_ORIGINS`; that name is UNVERIFIED against current Immich, so confirm the correct setting in Immich's documentation for your version rather than relying on it.
+
 ## Remote keys
 
-Arrows: move. OK: open/select. Back: previous screen. In the viewer: Left/Right previous/next photo.
+Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next photo.
