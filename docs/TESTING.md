@@ -10,7 +10,13 @@ Each step lists what to do and what you should see. Stop at the first failure an
 - [ ] (Once) install the probe app to record the TV's engine: `ares-package tools/probe -o build && ares-install -d tv build/com.immich.webos.probe_0.0.1_all.ipk && ares-launch -d tv com.immich.webos.probe`. Write down the `Chrome/NN` number and every "NO".
 
 ## 1. Install
+
+**Legacy build (webOS 3.x+ TVs):**
 `npm run package:legacy`, `ares-install -d tv build/com.immich.webos_0.2.0_all.ipk`, `ares-launch -d tv com.immich.webos`.
+
+**Enact build (webOS 5+ only):**
+`npm --prefix shell-enact run pack`, `ares-package shell-enact/dist -o build`, `ares-install -d tv build/com.immich.webos.enact_0.2.0_all.ipk`, `ares-launch -d tv com.immich.webos.enact`.
+
 Expect: the Immich icon in the launcher list and the **Setup** screen on launch.
 
 ## 2. Sign in
@@ -47,3 +53,4 @@ What you saw vs. expected:
 ## Results log
 | Date | Build | TV / webOS | Steps passed | Notes |
 |---|---|---|---|---|
+| 2026-09-19 | legacy + enact | not yet run | none | All automated gates pass (npm test, both .ipk packaged). Manual steps 0-8 PENDING: probe on TV, docs/immich-api-notes.md curl checks, desktop-browser smoke, TV run, Simulator run. |

@@ -32,11 +32,20 @@ The Simulator offers webOS TV 6.0 and 22-26 only, so it cannot emulate webOS 3.x
 
 1. On the TV install the **Developer Mode** app from the LG Content Store, open it, turn **Dev Mode Status** and **Key Server** ON, note the TV's IP.
 2. On your PC: `ares-setup-device` -> add device (name e.g. `tv`, IP, port `9922`, user `prisoner`), then `ares-device -i tv` to check.
+
+**Legacy build (webOS 3.x+ TVs):**
 3. `npm run package:legacy`
 4. `ares-install -d tv build/com.immich.webos_0.2.0_all.ipk`
 5. `ares-launch -d tv com.immich.webos`
-6. Debug: `ares-inspect -d tv --app com.immich.webos --open` (needs a Chromium that matches the TV's engine) and `ares-log -d tv com.immich.webos -f`.
-7. The Developer Mode session expires after ~50 hours; open the Developer Mode app to extend it.
+
+**Enact build (webOS 5+ TVs):**
+3. `npm --prefix shell-enact run pack`
+4. `ares-package shell-enact/dist -o build`
+5. `ares-install -d tv build/com.immich.webos.enact_0.2.0_all.ipk`
+6. `ares-launch -d tv com.immich.webos.enact`
+
+Debug: `ares-inspect -d tv --app <app-id> --open` (needs a Chromium that matches the TV's engine) and `ares-log -d tv <app-id> -f`.
+The Developer Mode session expires after ~50 hours; open the Developer Mode app to extend it.
 Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
 
 ## Connect to Immich
