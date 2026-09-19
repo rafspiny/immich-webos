@@ -11,7 +11,7 @@
         case 39: return 'right';
         case 40: return 'down';
         case 13: return 'ok';
-        case 461: case 27: case 8: return 'back';
+        case 461: case 27: return 'back';
         default: return null;
       }
     }

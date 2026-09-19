@@ -26,6 +26,7 @@
     },
     start: function (firstName) {
       document.addEventListener('keydown', function (e) {
+        if (e.target && e.target.tagName === 'INPUT') { return; }
         var key = ui.keys.name(e.keyCode);
         if (!key || !current) { return; }
         e.preventDefault();
