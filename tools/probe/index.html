@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=1920">
+<title>Probe</title>
+<style>body{background:#111;color:#eee;font:28px sans-serif;margin:40px}td{padding:4px 24px}.ok{color:#6c6}.no{color:#e66}</style>
+</head><body>
+<h1>webOS engine probe</h1>
+<pre id="ua"></pre>
+<table id="t"></table>
+<script>
+(function () {
+  document.getElementById('ua').textContent = navigator.userAgent;
+  var css = document.createElement('div').style;
+  function cssOk(prop, val) { css.cssText = ''; css[prop] = val; return css[prop] === val; }
+  var tests = [
+    ['Promise', typeof Promise === 'function'],
+    ['XMLHttpRequest', typeof XMLHttpRequest === 'function'],
+    ['fetch', typeof fetch === 'function'],
+    ['Array.from', typeof Array.from === 'function'],
+    ['Object.assign', typeof Object.assign === 'function'],
+    ['String.includes', typeof String.prototype.includes === 'function'],
+    ['NodeList.forEach', typeof NodeList.prototype.forEach === 'function'],
+    ['flex (unprefixed)', cssOk('display', 'flex')],
+    ['CSS grid', cssOk('display', 'grid')],
+    ['CSS variables', !!(window.CSS && CSS.supports && CSS.supports('--a', '0'))],
+    ['object-fit', 'objectFit' in document.body.style],
+    ['position: sticky', cssOk('position', 'sticky')],
+    ['WebP <img>', true]
+  ];
+  var rows = '';
+  for (var i = 0; i < tests.length; i++) {
+    rows += '<tr><td>' + tests[i][0] + '</td><td class="' + (tests[i][1] ? 'ok' : 'no') + '">' + (tests[i][1] ? 'yes' : 'NO') + '</td></tr>';
+  }
+  document.getElementById('t').innerHTML = rows;
+}());
+</script></body></html>
