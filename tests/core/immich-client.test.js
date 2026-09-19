@@ -67,3 +67,26 @@ test('calls reject when not configured', function () {
   var c = clientMod.create({ http: {}, getConfig: function () { return { serverUrl: '', apiKey: '' }; } });
   return c.listAlbums().then(function () { assert.fail('should reject'); }, function (e) { assert.strictEqual(e.code, 'not_configured'); });
 });
+
+function assertInvalid(p) {
+  return p.then(function () { assert.fail('should reject'); }, function (e) {
+    assert.strictEqual(e.code, 'invalid_response');
+    assert.match(e.message, /does not look like an Immich server/);
+  });
+}
+test('verify rejects non-object payloads with invalid_response', function () {
+  return Promise.all([null, undefined, 'html', [1]].map(function (v) {
+    return assertInvalid(make([v]).c.verify('http://o', 'Z'));
+  }));
+});
+test('listAlbums rejects a non-array payload', function () {
+  return assertInvalid(make([null]).c.listAlbums());
+});
+test('getAlbum rejects a non-object payload', function () {
+  return assertInvalid(make([null]).c.getAlbum('x'));
+});
+test('searchPage rejects payloads without assets.items array', function () {
+  return Promise.all([null, {}, { assets: {} }, { assets: { items: 'x' } }].map(function (v) {
+    return assertInvalid(make([v]).c.searchPage(1, 10));
+  }));
+});
