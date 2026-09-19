@@ -38,7 +38,8 @@
       dom.hide(input);
       draw();
     }
-    input.onkeydown = function (e) { if (e.keyCode === 13) { input.blur(); } };
+    input.onkeydown = function (e) { if (e.keyCode === 13 || e.keyCode === 461 || e.keyCode === 27) { input.blur(); } };
+    input.onkeyup = function (e) { if (e.keyCode === 461) { input.blur(); } };
     input.onblur = endNative;
     draw();
 
