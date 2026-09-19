@@ -1,0 +1,13 @@
+{
+  "id": "com.immich.webos.enact",
+  "version": "0.2.0",
+  "vendor": "Immich",
+  "type": "web",
+  "main": "index.html",
+  "title": "Immich (Enact)",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#111827",
+  "resolution": "1920x1080",
+  "uiRevision": "2"
+}
