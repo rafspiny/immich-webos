@@ -1,0 +1,6 @@
+.swp
+*.swp
+build/
+*.ipk
+node_modules/
+.claude/settings.local.json

@@ -1,0 +1,13 @@
+{
+  "id": "com.immich.webos",
+  "version": "0.1.0",
+  "vendor": "Immich",
+  "type": "web",
+  "main": "index.html",
+  "title": "Immich",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "resolution": "1920x1080",
+  "uiRevision": "2",
+  "requiredPermissions": []
+}
