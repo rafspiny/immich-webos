@@ -33,6 +33,12 @@ test('moveIndex in list mode (1 column)', function () {
   assert.strictEqual(g.moveIndex(0, 'up', 1, 5), 0);
   assert.strictEqual(g.moveIndex(2, 'right', 1, 5), 2);
 });
+test('moveIndex on empty list returns same index for all directions', function () {
+  assert.strictEqual(g.moveIndex(0, 'left', 4, 0), 0);
+  assert.strictEqual(g.moveIndex(0, 'right', 4, 0), 0);
+  assert.strictEqual(g.moveIndex(0, 'up', 4, 0), 0);
+  assert.strictEqual(g.moveIndex(0, 'down', 4, 0), 0);
+});
 test('scrollTopFor keeps the focused row fully visible', function () {
   assert.strictEqual(g.scrollTopFor(20, 4, 100, 300, 0), 300);
   assert.strictEqual(g.scrollTopFor(0, 4, 100, 300, 300), 0);

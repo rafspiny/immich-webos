@@ -16,6 +16,7 @@
     };
   }
   function moveIndex(index, dir, cols, count) {
+    if (count === 0) { return index; }
     var row = Math.floor(index / cols);
     var lastRow = Math.floor((count - 1) / cols);
     if (dir === 'left') { return index % cols === 0 ? index : index - 1; }
