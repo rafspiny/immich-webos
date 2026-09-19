@@ -1,14 +1,14 @@
 {
 	"name": "shell-enact",
-	"version": "1.0.0",
-	"description": "A general template for an Enact Sandstone application.",
+	"version": "0.2.0",
+	"description": "Immich for webOS TV (Enact Sandstone shell)",
 	"author": "",
 	"main": "src/index.js",
 	"scripts": {
 		"serve": "node ../tools/sync-core.js && enact serve --no-linting",
 		"pack": "node ../tools/sync-core.js && enact pack --no-linting",
-		"pack-p": "enact pack -p",
-		"watch": "enact pack --watch",
+		"pack-p": "node ../tools/sync-core.js && enact pack -p --no-linting",
+		"watch": "node ../tools/sync-core.js && enact pack --watch --no-linting",
 		"clean": "enact clean",
 		"lint": "enact lint .",
 		"license": "enact license",
