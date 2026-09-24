@@ -57,7 +57,13 @@
         pager = null;
         p = ctx.client.getAlbum(params.albumId).then(function (a) { return a.assets; });
       }
-      p.then(function (list) { items = list; showGrid(0); }, function (err) { showMsg(err.message, true); toBar(); });
+      p.then(function (list) {
+        items = list;
+        if (w.ImmichCore && w.ImmichCore.debugLog) {
+          w.ImmichCore.debugLog('view-album.load', { albumId: params.albumId, all: !!params.all, itemsLen: items.length });
+        }
+        showGrid(0);
+      }, function (err) { showMsg(err.message, true); toBar(); });
     }
 
     backBtn.onclick = function () { ctx.app.back(); };

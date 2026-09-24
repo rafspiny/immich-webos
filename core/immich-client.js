@@ -54,6 +54,7 @@
       listAlbums: function () {
         return call('GET', '/albums').then(function (list) {
           if (!Array.isArray(list)) { throw invalidResponse(); }
+          if (core.debugLog) { core.debugLog('listAlbums', { count: list.length }); }
           return list.map(function (a) {
             return { id: a.id, name: a.albumName, count: a.assetCount, coverId: a.albumThumbnailAssetId };
           });
@@ -62,12 +63,24 @@
       getAlbum: function (id) {
         return call('GET', '/albums/' + id).then(function (a) {
           if (!isObject(a)) { throw invalidResponse(); }
+          if (core.debugLog) {
+            core.debugLog('getAlbum', {
+              id: id,
+              keys: Object.keys(a),
+              hasAssets: 'assets' in a,
+              assetsType: typeof a.assets,
+              assetsLen: a.assets && a.assets.length
+            });
+          }
           return { id: a.id, name: a.albumName, assets: onlyImages(a.assets) };
         });
       },
       searchPage: function (page, size) {
         return call('POST', '/search/metadata', { page: page, size: size, order: 'desc', type: 'IMAGE' }).then(function (d) {
           if (!isObject(d) || !isObject(d.assets) || !Array.isArray(d.assets.items)) { throw invalidResponse(); }
+          if (core.debugLog) {
+            core.debugLog('searchPage', { page: page, size: size, itemsLen: d.assets.items.length, nextPage: d.assets.nextPage });
+          }
           var next = d.assets.nextPage;
           return { items: onlyImages(d.assets.items), nextPage: next ? parseInt(next, 10) : null };
         });
