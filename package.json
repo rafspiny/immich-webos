@@ -12,7 +12,8 @@
     "build:legacy": "node tools/build-legacy.js",
     "package:legacy": "npm run build:legacy && ares-package dist/legacy -o build",
     "serve:legacy": "npm run build:legacy && python3 -m http.server 8080 --directory dist/legacy",
-    "sync:core": "node tools/sync-core.js"
+    "sync:core": "node tools/sync-core.js",
+    "debug:log-server": "node tools/log-server.js"
   },
   "devDependencies": { "eslint": "^9.0.0" }
 }
