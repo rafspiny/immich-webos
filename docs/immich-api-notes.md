@@ -105,13 +105,18 @@ If CORS cannot be enabled, the XHR blob loading approach mentioned above should 
 
 ---
 
+## Known Immich v3.x behaviour
+
+**`GET /albums/{id}` has no `assets` field on Immich v3.x.** Confirmed live (not just from the OpenAPI spec) via the debug logging in `docs/DEBUG-LOGGING.md` against the user's own v3.x server on 2026-09-24: the response is `200 OK` and includes `assetCount`, but no `assets` array at all — `hasAssets:false`, `assetsType:"undefined"`. Earlier assumptions in this app relied on the response including `assets`; that assumption was wrong for v3.x and is not just a permissions issue (a missing permission returns 401/403, not a 200 with a smaller body).
+
+A single album's photos are fetched the same way as "All photos": `POST /api/search/metadata` with an `albumIds: [id]` filter (see Check 3 above for the general shape). There is no separate album-assets endpoint.
+
 ## Implementation Details
 
 The `core/immich-client.js` module implements:
 - **verify(serverUrl, apiKey):** Authenticates using `/api/users/me` (fallback to `/api/user` on 404)
-- **listAlbums():** Fetches albums with normalization
-- **getAlbum(id):** Fetches album details, filtering to IMAGE type only
-- **searchPage(page, size):** Paginated asset search with IMAGE type filter
+- **listAlbums():** Fetches albums with normalization (name/count/cover only — no per-album detail fetch needed)
+- **searchPage(page, size, filter):** Paginated asset search with IMAGE type filter; `filter` is an optional object merged into the request body (e.g. `{albumIds: [id]}` to list one album's photos, omitted for "All photos")
 - **thumbnailUrl(assetId, size):** Generates thumbnail URL with `apiKey` query parameter
 - **viewerUrl(assetId):** Generates preview URL with `apiKey` query parameter
 
