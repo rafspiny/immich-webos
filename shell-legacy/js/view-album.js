@@ -49,16 +49,10 @@
     }
     function load(params) {
       showMsg('Loading...', false);
-      var p;
-      if (params.all) {
-        pager = w.ImmichCore.paging.createPager(function (n) { return ctx.client.searchPage(n, 60); });
-        p = pager.loadNext().then(function () { return pager.items(); });
-      } else {
-        pager = null;
-        p = ctx.client.getAlbum(params.albumId).then(function (a) { return a.assets; });
-      }
-      p.then(function (list) {
-        items = list;
+      var filter = params.all ? null : { albumIds: [params.albumId] };
+      pager = w.ImmichCore.paging.createPager(function (n) { return ctx.client.searchPage(n, 60, filter); });
+      pager.loadNext().then(function () {
+        items = pager.items();
         if (w.ImmichCore && w.ImmichCore.debugLog) {
           w.ImmichCore.debugLog('view-album.load', { albumId: params.albumId, all: !!params.all, itemsLen: items.length });
         }

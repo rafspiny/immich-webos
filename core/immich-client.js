@@ -60,26 +60,24 @@
           });
         });
       },
-      getAlbum: function (id) {
-        return call('GET', '/albums/' + id).then(function (a) {
-          if (!isObject(a)) { throw invalidResponse(); }
-          if (core.debugLog) {
-            core.debugLog('getAlbum', {
-              id: id,
-              keys: Object.keys(a),
-              hasAssets: 'assets' in a,
-              assetsType: typeof a.assets,
-              assetsLen: a.assets && a.assets.length
-            });
+      searchPage: function (page, size, filter) {
+        var body = { page: page, size: size, order: 'desc', type: 'IMAGE' };
+        var key;
+        if (filter) {
+          for (key in filter) {
+            if (Object.prototype.hasOwnProperty.call(filter, key)) { body[key] = filter[key]; }
           }
-          return { id: a.id, name: a.albumName, assets: onlyImages(a.assets) };
-        });
-      },
-      searchPage: function (page, size) {
-        return call('POST', '/search/metadata', { page: page, size: size, order: 'desc', type: 'IMAGE' }).then(function (d) {
+        }
+        return call('POST', '/search/metadata', body).then(function (d) {
           if (!isObject(d) || !isObject(d.assets) || !Array.isArray(d.assets.items)) { throw invalidResponse(); }
           if (core.debugLog) {
-            core.debugLog('searchPage', { page: page, size: size, itemsLen: d.assets.items.length, nextPage: d.assets.nextPage });
+            core.debugLog('searchPage', {
+              page: page,
+              size: size,
+              albumIds: filter && filter.albumIds,
+              itemsLen: d.assets.items.length,
+              nextPage: d.assets.nextPage
+            });
           }
           var next = d.assets.nextPage;
           return { items: onlyImages(d.assets.items), nextPage: next ? parseInt(next, 10) : null };

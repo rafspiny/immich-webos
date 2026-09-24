@@ -14,13 +14,10 @@ const AlbumView = ({nav, params, ...rest}) => {
 
 	useEffect(() => {
 		const done = (list) => { setItems(list); setMessage(list.length ? '' : 'No photos here.'); };
-		if (params.all) {
-			const pager = services.paging.createPager((n) => services.client.searchPage(n, 60));
-			pagerRef.current = pager;
-			pager.loadNext().then(() => done(pager.items().slice()), (err) => setMessage(err.message));
-		} else {
-			services.client.getAlbum(params.albumId).then((a) => done(a.assets), (err) => setMessage(err.message));
-		}
+		const filter = params.all ? null : {albumIds: [params.albumId]};
+		const pager = services.paging.createPager((n) => services.client.searchPage(n, 60, filter));
+		pagerRef.current = pager;
+		pager.loadNext().then(() => done(pager.items().slice()), (err) => setMessage(err.message));
 	}, [params]);
 
 	const loadMore = () => {

@@ -39,11 +39,10 @@ test('listAlbums normalizes fields', function () {
     assert.deepStrictEqual(l, [{ id: 'a1', name: 'Trip', count: 3, coverId: 'x9' }]);
   });
 });
-test('getAlbum keeps images only', function () {
-  var m = make([{ id: 'a1', albumName: 'Trip', assets: [
-    { id: '1', type: 'IMAGE', originalFileName: 'a.jpg' }, { id: '2', type: 'VIDEO', originalFileName: 'b.mp4' }] }]);
-  return m.c.getAlbum('a1').then(function (a) {
-    assert.deepStrictEqual(a, { id: 'a1', name: 'Trip', assets: [{ id: '1', name: 'a.jpg' }] });
+test('searchPage merges an optional filter object into the request body', function () {
+  var m = make([{ assets: { items: [{ id: '1', type: 'IMAGE', originalFileName: 'a.jpg' }], nextPage: null } }]);
+  return m.c.searchPage(1, 60, { albumIds: ['a1'] }).then(function () {
+    assert.deepStrictEqual(m.calls[0].body, { page: 1, size: 60, order: 'desc', type: 'IMAGE', albumIds: ['a1'] });
   });
 });
 test('searchPage posts paging body and normalizes nextPage', function () {
@@ -81,9 +80,6 @@ test('verify rejects non-object payloads with invalid_response', function () {
 });
 test('listAlbums rejects a non-array payload', function () {
   return assertInvalid(make([null]).c.listAlbums());
-});
-test('getAlbum rejects a non-object payload', function () {
-  return assertInvalid(make([null]).c.getAlbum('x'));
 });
 test('searchPage rejects payloads without assets.items array', function () {
   return Promise.all([null, {}, { assets: {} }, { assets: { items: 'x' } }].map(function (v) {
