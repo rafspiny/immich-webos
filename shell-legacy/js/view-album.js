@@ -26,6 +26,7 @@
         var img = dom.el('img');
         img.src = ctx.client.thumbnailUrl(a.id, view.thumbSize);
         box.appendChild(img);
+        if (a.type === 'VIDEO') { box.appendChild(dom.el('div', 'play-badge')); }
         body.appendChild(box);
         return body;
       },
