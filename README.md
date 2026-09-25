@@ -60,6 +60,7 @@ The app is a static web app packaged as an `.ipk` and run by the TV's Web Applic
 | `paging` | loads "All photos" page by page so a whole library is never fetched at once |
 | `immich-client` | albums, album contents, paged photo search, thumbnail and preview URLs; photos and videos are returned (audio and other files are skipped) |
 | `auth` | validates the server address and API key against Immich, and saves them only after a successful check |
+| `debug-log` | optional in-app log: the last 200 entries in memory, switched on in Settings and read on the Logs screen; never records the API key |
 
 **The shells** are thin UIs on top of the core, with the same screens: Setup, Albums, Album, Photo viewer, Settings.
 
@@ -124,7 +125,7 @@ The Simulator offers webOS TV 6.0 and 22-26 only, so it cannot emulate webOS 3.x
 5. `ares-install -d tv build/com.immich.webos.enact_0.2.0_all.ipk`
 6. `ares-launch -d tv com.immich.webos.enact`
 
-Debug: `ares-inspect -d tv --app <app-id> --open` (needs a Chromium that matches the TV's engine) and `ares-log -d tv <app-id> -f`.
+Debug: `ares-inspect -d tv --app <app-id> --open` (needs a Chromium that matches the TV's engine) and `ares-log -d tv <app-id> -f`. In-app: Settings > Debug logging, then Settings > View logs (see [docs/DEBUG-LOGGING.md](docs/DEBUG-LOGGING.md)).
 The Developer Mode session expires after ~50 hours; open the Developer Mode app to extend it.
 Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
 

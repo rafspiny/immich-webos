@@ -45,11 +45,16 @@ Settings > Sign out. Expect the Setup screen; reopening the app shows Setup agai
 ## 8. Simulator (Enact build)
 Repeat steps 2-7 with `ares-launch -s 24 shell-enact/dist` in the Simulator.
 
+## 9. Debug logs (both builds)
+Albums > Settings: set **Debug logging** to On. Go back, open an album, then Settings > **View logs**.
+Expect: entries such as `http` (status, size) and `searchPage` (item counts), newest first. Up/Down move between entries; long lines scroll sideways (Left/Right on the legacy build, the horizontal scrollbar on Enact). **Clear** empties the list. Set Debug logging to Off, use the app, open View logs again: nothing new is recorded. Close and reopen the app: the On/Off choice is kept.
+
 ## Report template
 TV model / webOS version / `navigator.userAgent` (from the probe): 
 Step that failed: 
 What you saw vs. expected: 
 `ares-log -d tv com.immich.webos` output: 
+Logs (Settings > View logs, with Debug logging On): 
 
 ## Results log
 | Date | Build | TV / webOS | Steps passed | Notes |
