@@ -20,14 +20,14 @@ const Viewer = ({open, items, index, onIndex, onClose}) => {
 	const close = () => { setFailedId(null); onClose(); };
 
 	useEffect(() => {
-		if (!open || isVideo) return undefined;   // for videos Left/Right belong to the player (seeking)
+		if (!open || (isVideo && !videoFailed)) return undefined;   // for a working video Left/Right belong to the player (seeking)
 		const onKey = (e) => {
 			if (e.keyCode === 37 && index > 0) onIndex(index - 1);
 			if (e.keyCode === 39 && index < items.length - 1) onIndex(index + 1);
 		};
 		document.addEventListener('keydown', onKey);
 		return () => document.removeEventListener('keydown', onKey);
-	}, [open, isVideo, index, items, onIndex]);
+	}, [open, isVideo, videoFailed, index, items, onIndex]);
 
 	return (
 		<Popup open={open} onClose={close} position="fullscreen">
@@ -49,7 +49,11 @@ const Viewer = ({open, items, index, onIndex, onClose}) => {
 					</MediaControls>
 				</VideoPlayer>
 			) : null}
-			{videoFailed ? <BodyText>Could not play this video. The server may not have a version this TV can decode.</BodyText> : null}
+			{videoFailed ? (
+				<div style={{position: 'absolute', bottom: '10%', left: 0, right: 0, textAlign: 'center', zIndex: 1}}>
+					<BodyText>Could not play this video. The server may not have a version this TV can decode.</BodyText>
+				</div>
+			) : null}
 		</Popup>
 	);
 };
