@@ -5,7 +5,8 @@
   var KEYS = {
     serverUrl: 'immich_server_url', apiKey: 'immich_api_key',
     viewMode: 'immich_view_mode', columns: 'immich_columns', thumbSize: 'immich_thumb_size',
-    history: 'immich_url_history'
+    history: 'immich_url_history',
+    debug: 'immich_debug_enabled'
   };
   var MAX_HISTORY = 5;
 
@@ -58,7 +59,9 @@
         var list = [url];
         getUrlHistory().forEach(function (u) { if (u !== url) { list.push(u); } });
         write(KEYS.history, JSON.stringify(list.slice(0, MAX_HISTORY)));
-      }
+      },
+      getDebugEnabled: function () { return read(KEYS.debug) === '1'; },
+      setDebugEnabled: function (on) { write(KEYS.debug, on ? '1' : '0'); }
     };
   }
 

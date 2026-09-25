@@ -40,3 +40,22 @@ test('a throwing storage never throws', function () {
   s.saveCredentials('a', 'b');
   assert.deepStrictEqual(s.getCredentials(), { serverUrl: '', apiKey: '' });
 });
+test('debug logging is off by default and remembers the choice', function () {
+  var st = memStorage();
+  var s = settings.create(st);
+  assert.strictEqual(s.getDebugEnabled(), false);
+  s.setDebugEnabled(true);
+  assert.strictEqual(s.getDebugEnabled(), true);
+  assert.strictEqual(settings.create(st).getDebugEnabled(), true);
+  s.setDebugEnabled(false);
+  assert.strictEqual(s.getDebugEnabled(), false);
+});
+test('debug flag ignores junk values and a throwing storage', function () {
+  var st = memStorage();
+  st.setItem('immich_debug_enabled', 'maybe');
+  assert.strictEqual(settings.create(st).getDebugEnabled(), false);
+  var bad = { getItem: function () { throw new Error('x'); }, setItem: function () { throw new Error('x'); }, removeItem: function () { throw new Error('x'); } };
+  var s = settings.create(bad);
+  s.setDebugEnabled(true);
+  assert.strictEqual(s.getDebugEnabled(), false);
+});
