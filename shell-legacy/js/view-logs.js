@@ -63,7 +63,9 @@
           ? 'No log entries yet. Use the app, then come back.'
           : 'Logging is off. Turn on "Debug logging" in Settings, use the app, then come back.');
         dom.show(msg);
-        toBar();
+        zone = 'bar';
+        grid.blur();
+        if (!stayOnBar) { ui.nav.focusFirst(bar); }
         return;
       }
       if (stayOnBar) { return; }
