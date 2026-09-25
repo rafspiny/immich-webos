@@ -13,7 +13,7 @@ const AlbumView = ({nav, params, ...rest}) => {
 	const view = services.settings.getView();
 
 	useEffect(() => {
-		const done = (list) => { setItems(list); setMessage(list.length ? '' : 'No photos here.'); };
+		const done = (list) => { setItems(list); setMessage(list.length ? '' : 'Nothing here yet.'); };
 		const filter = params.all ? null : {albumIds: [params.albumId]};
 		const pager = services.paging.createPager((n) => services.client.searchPage(n, 60, filter));
 		pagerRef.current = pager;

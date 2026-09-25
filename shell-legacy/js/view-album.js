@@ -43,7 +43,7 @@
       dom.hide(msg);
       grid.setView(view.viewMode, view.columns);
       grid.setItems(items);
-      if (!items.length) { showMsg('No photos here.', false); dom.show(msg); toBar(); return; }
+      if (!items.length) { showMsg('Nothing here yet.', false); dom.show(msg); toBar(); return; }
       zone = 'grid';
       ui.nav.clearFocus();
       grid.focus(index);
