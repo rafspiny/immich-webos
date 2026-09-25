@@ -6,8 +6,9 @@ import SetupView from '../views/SetupView';
 import AlbumsView from '../views/AlbumsView';
 import AlbumView from '../views/AlbumView';
 import SettingsView from '../views/SettingsView';
+import LogsView from '../views/LogsView';
 
-const VIEWS = {setup: SetupView, albums: AlbumsView, album: AlbumView, settings: SettingsView};
+const VIEWS = {setup: SetupView, albums: AlbumsView, album: AlbumView, settings: SettingsView, logs: LogsView};
 
 const App = (props) => {
 	const [stack, setStack] = useState([{name: services.auth.isConfigured() ? 'albums' : 'setup'}]);
