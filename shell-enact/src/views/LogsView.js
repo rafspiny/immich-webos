@@ -20,12 +20,17 @@ const readLines = () => services.debugLog.entries().map((entry) => services.debu
 const LogsView = ({nav, params, ...rest}) => {
 	const [lines, setLines] = useState(readLines);
 	const pos = useRef({x: 0, y: 0});
-	const reload = () => setLines(readLines());
-	const clear = () => { services.debugLog.clear(); pos.current = {x: 0, y: 0}; reload(); };
-	const rowStyle = {whiteSpace: 'pre', fontFamily: 'monospace', fontSize: ri.scaleToRem(24), padding: '0 12px'};
-	const [focused, setFocused] = useState(false);
 	const scrollTo = useRef(null);
 	const content = useRef(null);
+	// New content starts at the top-left: reset the tracked position and the real scroll position together.
+	const reload = () => {
+		pos.current = {x: 0, y: 0};
+		if (scrollTo.current && content.current) scrollTo.current({position: {x: 0, y: 0}, animate: false});
+		setLines(readLines());
+	};
+	const clear = () => { services.debugLog.clear(); reload(); };
+	const rowStyle = {whiteSpace: 'pre', fontFamily: 'monospace', fontSize: ri.scaleToRem(24), padding: '0 12px'};
+	const [focused, setFocused] = useState(false);
 	const onFocus = useCallback(() => setFocused(true), []);
 	const onBlur = useCallback(() => setFocused(false), []);
 	const captureScrollTo = useCallback((fn) => { scrollTo.current = fn; }, []);
@@ -71,11 +76,21 @@ const LogsView = ({nav, params, ...rest}) => {
 						: 'Logging is off. Turn on "Debug logging" in Settings, use the app, then come back.'}
 				</BodyText>
 			) : (
-				<Scroller direction="both" focusableScrollbar>
-					<div style={{display: 'inline-block', minWidth: '100%'}}>
-						{lines.map((line, i) => <Row key={i} style={rowStyle}>{line}</Row>)}
-					</div>
-				</Scroller>
+				<LogArea
+					style={areaStyle}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					onSpotlightUp={step(0, -STEP)}
+					onSpotlightDown={step(0, STEP)}
+					onSpotlightLeft={step(-STEP, 0)}
+					onSpotlightRight={step(STEP, 0)}
+				>
+					<Scroller direction="both" cbScrollTo={captureScrollTo} onScrollStop={onScrollStop}>
+						<div ref={content} style={{display: 'inline-block', minWidth: '100%'}}>
+							{lines.map((line, i) => <div key={i} style={rowStyle}>{line}</div>)}
+						</div>
+					</Scroller>
+				</LogArea>
 			)}
 		</Panel>
 	);

@@ -8,7 +8,7 @@ The app can keep a short log of what it is doing (requests and their results, pl
 2. Use the app as normal (open an album, scroll, ...).
 3. Settings > **View logs**. The newest entries are at the top, one per line.
    - Legacy build: Up/Down move between entries; Left/Right slide every line sideways so long lines can be read in full.
-   - Enact build: Up (from the buttons) or Down (to the log area) puts a highlight box around the log; then Up/Down scroll it vertically and Left/Right scroll it sideways. Up at the very top of the log returns to the buttons.
+   - Enact build: Press Down from the Refresh/Clear buttons to focus the log area (a highlight box appears); then Up/Down scroll it vertically and Left/Right scroll it sideways. Up at the very top of the log returns to the buttons.
    - **Refresh** loads entries recorded since you opened the screen; **Clear** empties the list.
 
 ## What is logged
