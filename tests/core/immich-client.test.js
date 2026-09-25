@@ -42,16 +42,32 @@ test('listAlbums normalizes fields', function () {
 test('searchPage merges an optional filter object into the request body', function () {
   var m = make([{ assets: { items: [{ id: '1', type: 'IMAGE', originalFileName: 'a.jpg' }], nextPage: null } }]);
   return m.c.searchPage(1, 60, { albumIds: ['a1'] }).then(function () {
-    assert.deepStrictEqual(m.calls[0].body, { page: 1, size: 60, order: 'desc', type: 'IMAGE', albumIds: ['a1'] });
+    assert.deepStrictEqual(m.calls[0].body, { page: 1, size: 60, order: 'desc', albumIds: ['a1'] });
   });
 });
 test('searchPage posts paging body and normalizes nextPage', function () {
   var m = make([{ assets: { items: [{ id: '1', type: 'IMAGE', originalFileName: 'a.jpg' }], nextPage: '3' } }]);
   return m.c.searchPage(2, 60).then(function (r) {
-    assert.deepStrictEqual(m.calls[0].body, { page: 2, size: 60, order: 'desc', type: 'IMAGE' });
+    assert.deepStrictEqual(m.calls[0].body, { page: 2, size: 60, order: 'desc' });
     assert.strictEqual(m.calls[0].method, 'POST');
-    assert.deepStrictEqual(r, { items: [{ id: '1', name: 'a.jpg' }], nextPage: 3 });
+    assert.deepStrictEqual(r, { items: [{ id: '1', name: 'a.jpg', type: 'IMAGE' }], nextPage: 3 });
   });
+});
+test('searchPage keeps images and videos and drops audio and other files', function () {
+  var m = make([{ assets: { items: [
+    { id: '1', type: 'IMAGE', originalFileName: 'a.jpg' },
+    { id: '2', type: 'VIDEO', originalFileName: 'b.mp4' },
+    { id: '3', type: 'AUDIO', originalFileName: 'c.mp3' },
+    { id: '4', type: 'OTHER', originalFileName: 'd.bin' }], nextPage: null } }]);
+  return m.c.searchPage(1, 60).then(function (r) {
+    assert.deepStrictEqual(r.items, [
+      { id: '1', name: 'a.jpg', type: 'IMAGE' },
+      { id: '2', name: 'b.mp4', type: 'VIDEO' }]);
+  });
+});
+test('video playback url carries the api key', function () {
+  var m = make([]);
+  assert.strictEqual(m.c.videoPlaybackUrl('v1'), 'https://s/api/assets/v1/video/playback?apiKey=K');
 });
 test('searchPage nextPage null when server sends none', function () {
   var m = make([{ assets: { items: [], nextPage: null } }]);

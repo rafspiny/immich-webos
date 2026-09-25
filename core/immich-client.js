@@ -15,9 +15,11 @@
   }
   function isObject(v) { return !!v && typeof v === 'object' && !Array.isArray(v); }
 
-  function toAsset(a) { return { id: a.id, name: a.originalFileName || a.id }; }
-  function onlyImages(list) {
-    return (list || []).filter(function (a) { return a.type === 'IMAGE'; }).map(toAsset);
+  var MEDIA_TYPES = { IMAGE: true, VIDEO: true };
+
+  function toAsset(a) { return { id: a.id, name: a.originalFileName || a.id, type: a.type }; }
+  function onlyMedia(list) {
+    return (list || []).filter(function (a) { return MEDIA_TYPES[a.type] === true; }).map(toAsset);
   }
 
   function create(deps) {
@@ -35,9 +37,9 @@
       }).then(function (r) { return r.data; });
     }
 
-    function media(assetId, size) {
+    function mediaUrl(assetId, path, query) {
       var cfg = getConfig();
-      return cfg.serverUrl + '/api/assets/' + assetId + '/thumbnail?size=' + size + '&apiKey=' + encodeURIComponent(cfg.apiKey);
+      return cfg.serverUrl + '/api/assets/' + assetId + path + '?' + (query ? query + '&' : '') + 'apiKey=' + encodeURIComponent(cfg.apiKey);
     }
 
     return {
@@ -60,7 +62,7 @@
         });
       },
       searchPage: function (page, size, filter) {
-        var body = { page: page, size: size, order: 'desc', type: 'IMAGE' };
+        var body = { page: page, size: size, order: 'desc' };
         var key;
         if (filter) {
           for (key in filter) {
@@ -70,11 +72,12 @@
         return call('POST', '/search/metadata', body).then(function (d) {
           if (!isObject(d) || !isObject(d.assets) || !Array.isArray(d.assets.items)) { throw invalidResponse(); }
           var next = d.assets.nextPage;
-          return { items: onlyImages(d.assets.items), nextPage: next ? parseInt(next, 10) : null };
+          return { items: onlyMedia(d.assets.items), nextPage: next ? parseInt(next, 10) : null };
         });
       },
-      thumbnailUrl: function (assetId, size) { return media(assetId, size); },
-      viewerUrl: function (assetId) { return media(assetId, 'preview'); }
+      thumbnailUrl: function (assetId, size) { return mediaUrl(assetId, '/thumbnail', 'size=' + size); },
+      viewerUrl: function (assetId) { return mediaUrl(assetId, '/thumbnail', 'size=preview'); },
+      videoPlaybackUrl: function (assetId) { return mediaUrl(assetId, '/video/playback'); }
     };
   }
 
