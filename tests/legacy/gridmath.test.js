@@ -50,3 +50,13 @@ test('stepValue clamps at both ends', function () {
   assert.strictEqual(g.stepValue([3, 4, 5], 3, -1), 3);
   assert.strictEqual(g.stepValue([3, 4, 5], 99, 1), 4);
 });
+test('layout accepts a custom list row height', function () {
+  assert.deepStrictEqual(g.layout('list', 1, 1860, 0, 40), { cols: 1, cellW: 1860, cellH: 40 });
+  assert.deepStrictEqual(g.layout('list', 1, 1860, 0), { cols: 1, cellW: 1860, cellH: 132 });
+});
+test('clampOffset keeps a horizontal scroll inside 0..max', function () {
+  assert.strictEqual(g.clampOffset(0, 240, 1000), 240);
+  assert.strictEqual(g.clampOffset(900, 240, 1000), 1000);
+  assert.strictEqual(g.clampOffset(100, -240, 1000), 0);
+  assert.strictEqual(g.clampOffset(0, 240, 0), 0);
+});

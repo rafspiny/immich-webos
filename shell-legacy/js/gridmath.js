@@ -2,8 +2,8 @@
   'use strict';
   var ui = root.ImmichUI = root.ImmichUI || {};
 
-  function layout(mode, columns, width, captionH) {
-    if (mode === 'list') { return { cols: 1, cellW: width, cellH: 132 }; }
+  function layout(mode, columns, width, captionH, listRowH) {
+    if (mode === 'list') { return { cols: 1, cellW: width, cellH: listRowH || 132 }; }
     var cellW = Math.floor(width / columns);
     return { cols: columns, cellW: cellW, cellH: Math.round(cellW * 0.75) + (captionH || 0) };
   }
@@ -40,8 +40,11 @@
     if (i < 0) { i = 0; }
     return list[Math.min(list.length - 1, Math.max(0, i + delta))];
   }
+  function clampOffset(offset, delta, max) {
+    return Math.min(max, Math.max(0, offset + delta));
+  }
 
-  var api = { layout: layout, totalRows: totalRows, visibleRange: visibleRange, moveIndex: moveIndex, scrollTopFor: scrollTopFor, stepValue: stepValue };
+  var api = { layout: layout, totalRows: totalRows, visibleRange: visibleRange, moveIndex: moveIndex, scrollTopFor: scrollTopFor, stepValue: stepValue, clampOffset: clampOffset };
   ui.gridmath = api;
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; }
 }(typeof window !== 'undefined' ? window : global));
