@@ -16,22 +16,7 @@ A TV is where a photo library is most pleasant to look at, but we are not aware 
 
 The app is a static web app packaged as an `.ipk` and run by the TV's Web Application Manager (WAM), the standard webOS web-app model. It has no server component of its own: the TV talks directly to your Immich server over its REST API.
 
-```
-                 +---------------------------------------------+
-                 |  core/   (ES5, no DOM, no framework)         |
-                 |  http | settings | paging | immich-client |  |
-                 |  auth                                        |
-                 +----------------------+----------------------+
-                                        |  shared by both
-             +--------------------------+---------------------------+
-             |                                                      |
- +-----------v-------------+                        +---------------v-----------+
- | shell-legacy/           |                        | shell-enact/              |
- | plain ES5 + flexbox,    |                        | Enact Sandstone (React),  |
- | no build step           |                        | VirtualGridList/Spotlight |
- | webOS TV 3.x and newer  |                        | webOS TV 5 and newer      |
- +-------------------------+                        +---------------------------+
-```
+![Architecture: on an LG TV, shell-legacy (plain ES5, webOS TV 3.x and newer) and shell-enact (Enact Sandstone, webOS TV 5 and newer) both sit on the shared ES5 core (http, settings, paging, immich-client, auth), which talks to your Immich server over its REST API.](docs/images/architecture.svg)
 
 **`core/`** holds everything that talks to Immich or keeps state. It has no DOM and no framework, so both shells use it unchanged and it is unit-tested with `node --test`:
 
