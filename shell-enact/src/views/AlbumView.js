@@ -33,6 +33,7 @@ const AlbumView = ({nav, params, ...rest}) => {
 				items={items}
 				view={view}
 				srcOf={(a) => services.client.thumbnailUrl(a.id, view.thumbSize)}
+				labelOf={(a) => (a.type === 'VIDEO' ? '▶ Video' : '')}
 				onSelect={setViewerIndex}
 				onNearEnd={loadMore}
 			/>
