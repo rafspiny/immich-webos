@@ -61,14 +61,20 @@
       flashInfo();
     }
 
-    img.onerror = function () { error.textContent = MSG_PHOTO; dom.show(error); };
+    img.onerror = function () {
+      if (isVideo()) { return; }                        /* a late error from the previous photo */
+      error.textContent = MSG_PHOTO; dom.show(error);
+    };
     video.onerror = function () {
-      if (!video.getAttribute('src')) { return; }      /* clearing the source also raises an error event */
+      if (!isVideo() || !video.getAttribute('src')) { return; }      /* clearing the source also raises an error event */
       error.textContent = MSG_VIDEO;
       dom.show(error);
     };
-    video.addEventListener('timeupdate', function () {
+    function refreshHud() {
       if (!hud.classList.contains('hidden')) { hud.textContent = hudText(); }
+    }
+    ['timeupdate', 'play', 'pause', 'loadedmetadata'].forEach(function (name) {
+      video.addEventListener(name, refreshHud);
     });
 
     return {
@@ -81,6 +87,7 @@
         if (key === 'right') { if (index < assets.length - 1) { index++; show(); } return true; }
         if (isVideo()) {
           if (key === 'ok') { if (video.paused) { playSafely(); } else { video.pause(); } flashInfo(); return true; }
+          if ((key === 'up' || key === 'down') && video.readyState < 1) { flashInfo(); return true; }   /* nothing to seek in yet */
           if (key === 'up') { video.currentTime = vm.seekTarget(video.currentTime, SEEK_SECONDS, video.duration); flashInfo(); return true; }
           if (key === 'down') { video.currentTime = vm.seekTarget(video.currentTime, -SEEK_SECONDS, video.duration); flashInfo(); return true; }
         }
