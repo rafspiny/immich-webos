@@ -138,7 +138,7 @@ Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
 
 ### Remote keys
 
-Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next photo.
+Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next item. On a video (legacy build): OK plays/pauses, Up/Down jump 10 seconds.
 
 ## Pairing through the phone: not possible at the moment
 

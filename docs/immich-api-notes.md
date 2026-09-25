@@ -133,4 +133,6 @@ The `core/immich-client.js` module implements:
 - **viewerUrl(assetId):** Generates preview URL with `apiKey` query parameter
 - **videoPlaybackUrl(assetId):** Generates the video playback URL with the `apiKey` query parameter
 
-All URLs use the format: `{serverUrl}/api/assets/{assetId}/thumbnail?size={size}&apiKey={apiKey}`
+Thumbnail and preview URLs use the format `{serverUrl}/api/assets/{assetId}/thumbnail?size={size}&apiKey={apiKey}`; the video URL is `{serverUrl}/api/assets/{assetId}/video/playback?apiKey={apiKey}`.
+
+Audio and other non-photo, non-video assets are filtered out client-side after paging, so a result page made up only of those looks empty to `core/paging.js` and ends paging early. This is a known limit.

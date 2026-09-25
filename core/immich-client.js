@@ -18,6 +18,8 @@
   var MEDIA_TYPES = { IMAGE: true, VIDEO: true };
 
   function toAsset(a) { return { id: a.id, name: a.originalFileName || a.id, type: a.type }; }
+  /* Audio and other assets are dropped after the server has paged. A page made up only of those looks
+     empty to core/paging.js and ends paging early; that is a known limit, not coded around. */
   function onlyMedia(list) {
     return (list || []).filter(function (a) { return MEDIA_TYPES[a.type] === true; }).map(toAsset);
   }
