@@ -12,6 +12,7 @@
   ui.app.register('album', ui.createAlbumView(ctx));
   ui.app.register('viewer', ui.createViewerView(ctx));
   ui.app.register('settings', ui.createSettingsView(ctx));
+  ui.app.register('logs', ui.createLogsView(ctx));
 
   ui.app.start(auth.isConfigured() ? 'albums' : 'setup');
 }(window));
