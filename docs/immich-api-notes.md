@@ -82,6 +82,18 @@ curl -s -D - -o /dev/null -X OPTIONS -H "Origin: null" -H "Access-Control-Reques
 
 ---
 
+### Check 8: Video playback URL
+**Command:**
+```bash
+curl -s -o /dev/null -w "%{http_code} %{content_type}\n" "URL/api/assets/VIDEO_ASSET_ID/video/playback?apiKey=KEY"
+```
+**Status:** UNVERIFIED - to be run by the user
+**Expected Result:** `200 video/mp4` (or `206` when a `Range` header is sent). The key needs the `asset.view` permission, the same as thumbnails.
+**Purpose:** Confirms video playback authenticates with the `apiKey` query parameter, which is the only way a `<video src>` can send it.
+**Note:** Whether the returned file is H.264 depends on the *server's* Transcode Policy (default `required`: transcode only when the source codec is not in the accepted list, default `h264`). A server set to `disabled`, or a video whose transcode job has not finished, can serve the original codec (for example HEVC), which older TVs cannot decode. The app shows "Could not play this video" in that case.
+
+---
+
 ## If a Check Fails
 
 ### If Check 4 (`apiKey=` query parameter) fails (401/404):
@@ -116,8 +128,9 @@ A single album's photos are fetched the same way as "All photos": `POST /api/sea
 The `core/immich-client.js` module implements:
 - **verify(serverUrl, apiKey):** Authenticates using `/api/users/me` (fallback to `/api/user` on 404)
 - **listAlbums():** Fetches albums with normalization (name/count/cover only — no per-album detail fetch needed)
-- **searchPage(page, size, filter):** Paginated asset search with IMAGE type filter; `filter` is an optional object merged into the request body (e.g. `{albumIds: [id]}` to list one album's photos, omitted for "All photos")
+- **searchPage(page, size, filter):** Paginated asset search. The request no longer restricts `type` (otherwise videos are never returned); the client keeps `IMAGE` and `VIDEO` assets and skips `AUDIO`/`OTHER`. Each asset is `{id, name, type}`. `filter` is an optional object merged into the request body (for example `{albumIds: [id]}`)
 - **thumbnailUrl(assetId, size):** Generates thumbnail URL with `apiKey` query parameter
 - **viewerUrl(assetId):** Generates preview URL with `apiKey` query parameter
+- **videoPlaybackUrl(assetId):** Generates the video playback URL with the `apiKey` query parameter
 
 All URLs use the format: `{serverUrl}/api/assets/{assetId}/thumbnail?size={size}&apiKey={apiKey}`

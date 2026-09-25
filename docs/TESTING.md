@@ -31,7 +31,7 @@ Also check: a wrong key shows "The server rejected the API key."; a wrong addres
 Scroll with the arrows; OK opens an album; Back returns to Albums with the same album highlighted.
 
 ## 4. Photos
-Inside an album: thumbnails load while scrolling; OK opens a photo; Left/Right change photo; Back returns with the last viewed photo highlighted. Try **All photos** on the Albums screen and scroll to the end: more photos load. Blank grey tiles instead of thumbnails mean the media URL check failed: re-run Check 4 in docs/immich-api-notes.md. Opening a single album loads the whole album at once; use All photos to test large-library paging (step 6).
+Inside an album: thumbnails load while scrolling; OK opens a photo; Left/Right change photo; Back returns with the last viewed photo highlighted. Try **All photos** on the Albums screen and scroll to the end: more photos load. Blank grey tiles instead of thumbnails mean the media URL check failed: re-run Check 4 in docs/immich-api-notes.md. Opening a single album loads the whole album at once; use All photos to test large-library paging (step 6). Videos appear in the same grids with a play badge (a round play symbol on the legacy build, a "▶ Video" caption on Enact); OK opens a video and it starts playing. Legacy build: OK pauses/resumes, Up/Down jump 10 seconds, Left/Right go to the previous/next item. Enact build: use the player controls (Previous/Next buttons included). A video the TV cannot decode shows "Could not play this video..." and the app stays usable (see Check 8 in docs/immich-api-notes.md).
 
 ## 5. View settings
 Albums > Settings: set Layout to List, Columns to 3, Photo size to Large; Back. Expect the layout to change immediately. Close the app (Home) and reopen it: settings are kept.
