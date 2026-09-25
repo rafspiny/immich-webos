@@ -47,7 +47,7 @@ Repeat steps 2-7 with `ares-launch -s 24 shell-enact/dist` in the Simulator.
 
 ## 9. Debug logs (both builds)
 Albums > Settings: set **Debug logging** to On. Go back, open an album, then Settings > **View logs**.
-Expect: entries such as `http` (status, size) and `searchPage` (item counts), newest first. Up/Down move between entries; long lines scroll sideways (Left/Right on the legacy build, the horizontal scrollbar on Enact). **Clear** empties the list. Set Debug logging to Off, use the app, open View logs again: nothing new is recorded. Close and reopen the app: the On/Off choice is kept.
+Expect: entries such as `http` (status, size) and `searchPage` (item counts), newest first. On the legacy build Up/Down move between entries and Left/Right slide long lines sideways. On Enact, move focus from the buttons to the log area (a highlight box appears), then Up/Down scroll vertically and Left/Right scroll sideways; the horizontal position must stay put while scrolling vertically, and Up at the top returns focus to the buttons. **Clear** empties the list. Set Debug logging to Off, use the app, open View logs again: nothing new is recorded. Close and reopen the app: the On/Off choice is kept.
 
 ## Report template
 TV model / webOS version / `navigator.userAgent` (from the probe): 
