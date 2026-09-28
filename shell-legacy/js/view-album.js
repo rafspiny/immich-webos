@@ -53,9 +53,6 @@
       pager = w.ImmichCore.paging.createPager(function (n) { return ctx.client.searchPage(n, 60, filter); });
       pager.loadNext().then(function () {
         items = pager.items();
-        if (w.ImmichCore && w.ImmichCore.debugLog) {
-          w.ImmichCore.debugLog('view-album.load', { albumId: params.albumId, all: !!params.all, itemsLen: items.length });
-        }
         showGrid(0);
       }, function (err) { showMsg(err.message, true); toBar(); });
     }
