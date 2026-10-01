@@ -4,3 +4,8 @@ build/
 *.ipk
 node_modules/
 .claude/settings.local.json
+dist/
+
+shell-enact/node_modules/
+shell-enact/dist/
+shell-enact/src/core/

@@ -1,0 +1,49 @@
+{
+	"name": "shell-enact",
+	"version": "0.2.0",
+	"description": "Immich for webOS TV (Enact Sandstone shell)",
+	"author": "",
+	"main": "src/index.js",
+	"scripts": {
+		"serve": "node ../tools/sync-core.js && enact serve --no-linting",
+		"pack": "node ../tools/sync-core.js && enact pack --no-linting",
+		"pack-p": "node ../tools/sync-core.js && enact pack -p --no-linting",
+		"watch": "node ../tools/sync-core.js && enact pack --watch --no-linting",
+		"clean": "enact clean",
+		"lint": "enact lint .",
+		"license": "enact license",
+		"test": "enact test",
+		"test-watch": "enact test --watch"
+	},
+	"license": "UNLICENSED",
+	"private": true,
+	"repository": "",
+	"enact": {
+		"theme": "sandstone"
+	},
+	"eslintConfig": {
+		"extends": "enact-proxy"
+	},
+	"eslintIgnore": [
+		"node_modules/*",
+		"build/*",
+		"dist/*",
+		"src/core/*"
+	],
+	"dependencies": {
+		"@enact/core": "^4.9.8",
+		"@enact/i18n": "^4.9.8",
+		"@enact/sandstone": "^2.9.13",
+		"@enact/spotlight": "^4.9.8",
+		"@enact/ui": "^4.9.8",
+		"ilib": "^14.21.2",
+		"prop-types": "^15.8.1",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"web-vitals": "^5.1.0"
+	},
+	"devDependencies": {
+		"@enact/cli": "^7.3.4",
+		"eslint-config-enact-proxy": "^1.0.9"
+	}
+}

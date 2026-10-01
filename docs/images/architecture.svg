@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 568" width="1080" height="568" role="img" aria-labelledby="t d" font-family="Inter, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <title id="t">Immich for webOS TV architecture</title>
+  <desc id="d">On an LG TV, two user interfaces, shell-legacy (plain ES5, webOS TV 3.x and newer) and shell-enact (Enact Sandstone, webOS TV 5 and newer), both use the shared core modules http, settings, paging, immich-client and auth. The core talks to your Immich server over its REST API.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M1 1 L9 5 L1 9 Z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- background (own rounded rect so it reads on light and dark pages) -->
+  <rect width="1080" height="568" rx="24" fill="url(#bg)"/>
+
+  <!-- TV / WAM container -->
+  <rect x="24" y="24" width="666" height="520" rx="20" fill="#0b1224" fill-opacity="0.55" stroke="#475569" stroke-width="1.5" stroke-dasharray="7 6"/>
+  <text x="48" y="58" font-size="14" font-weight="700" letter-spacing="1.2" fill="#cbd5e1">LG WEBOS TV</text>
+  <text x="48" y="79" font-size="13" fill="#94a3b8">Web Application Manager (WAM) runs the packaged .ipk</text>
+
+  <!-- core -->
+  <rect x="54" y="100" width="606" height="150" rx="16" fill="#0d3b3a" stroke="#2dd4bf" stroke-width="2"/>
+  <text x="76" y="134" font-size="20" font-weight="700" fill="#5eead4">core/</text>
+  <text x="140" y="134" font-size="13" fill="#99f6e4">shared ES5, no DOM, no framework, unit-tested</text>
+  <g font-size="13" font-weight="600" text-anchor="middle" fill="#ecfeff">
+    <rect x="76" y="164" width="106" height="52" rx="10" fill="#115e59" stroke="#2dd4bf" stroke-opacity="0.6"/>
+    <text x="129" y="195">http</text>
+    <rect x="190" y="164" width="106" height="52" rx="10" fill="#115e59" stroke="#2dd4bf" stroke-opacity="0.6"/>
+    <text x="243" y="195">settings</text>
+    <rect x="304" y="164" width="106" height="52" rx="10" fill="#115e59" stroke="#2dd4bf" stroke-opacity="0.6"/>
+    <text x="357" y="195">paging</text>
+    <rect x="418" y="164" width="106" height="52" rx="10" fill="#115e59" stroke="#2dd4bf" stroke-opacity="0.6"/>
+    <text x="471" y="195">immich-client</text>
+    <rect x="532" y="164" width="106" height="52" rx="10" fill="#115e59" stroke="#2dd4bf" stroke-opacity="0.6"/>
+    <text x="585" y="195">auth</text>
+  </g>
+
+  <!-- shells use core -->
+  <line x1="199" y1="348" x2="199" y2="256" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="515" y1="348" x2="515" y2="256" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <rect x="267" y="283" width="180" height="34" rx="17" fill="#1e293b" stroke="#64748b"/>
+  <text x="357" y="305" font-size="13" font-weight="600" text-anchor="middle" fill="#e2e8f0">shared by both shells</text>
+  <line x1="199" y1="300" x2="267" y2="300" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <line x1="447" y1="300" x2="515" y2="300" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3 4"/>
+
+  <!-- shell-legacy -->
+  <rect x="54" y="352" width="290" height="168" rx="16" fill="#452a08" stroke="#fbbf24" stroke-width="2"/>
+  <text x="76" y="386" font-size="20" font-weight="700" fill="#fcd34d">shell-legacy/</text>
+  <g font-size="13" fill="#fde68a">
+    <text x="76" y="416">Plain ES5 + flexbox, no build step</text>
+    <text x="76" y="437">Own D-pad focus, windowed grid/list,</text>
+    <text x="76" y="458">on-screen keyboard</text>
+  </g>
+  <rect x="76" y="475" width="246" height="28" rx="14" fill="#78350f" stroke="#fbbf24" stroke-opacity="0.7"/>
+  <text x="199" y="494" font-size="12.5" font-weight="600" text-anchor="middle" fill="#fef3c7">webOS TV 3.x and newer</text>
+
+  <!-- shell-enact -->
+  <rect x="370" y="352" width="290" height="168" rx="16" fill="#0f2a52" stroke="#60a5fa" stroke-width="2"/>
+  <text x="392" y="386" font-size="20" font-weight="700" fill="#93c5fd">shell-enact/</text>
+  <g font-size="13" fill="#bfdbfe">
+    <text x="392" y="416">Enact Sandstone (React)</text>
+    <text x="392" y="437">VirtualGridList and Spotlight for</text>
+    <text x="392" y="458">grid/list and D-pad focus</text>
+  </g>
+  <rect x="392" y="475" width="246" height="28" rx="14" fill="#1e3a8a" stroke="#60a5fa" stroke-opacity="0.7"/>
+  <text x="515" y="494" font-size="12.5" font-weight="600" text-anchor="middle" fill="#dbeafe">webOS TV 5 and newer</text>
+
+  <!-- core <-> server -->
+  <line x1="664" y1="175" x2="826" y2="175" stroke="#94a3b8" stroke-width="2.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="760" y="158" font-size="13" font-weight="600" text-anchor="middle" fill="#e2e8f0">REST API</text>
+  <text x="760" y="199" font-size="12" text-anchor="middle" fill="#94a3b8">XMLHttpRequest</text>
+
+  <!-- server -->
+  <rect x="830" y="100" width="220" height="150" rx="16" fill="#2e1a4f" stroke="#c4b5fd" stroke-width="2"/>
+  <g fill="#4c1d95" stroke="#c4b5fd" stroke-width="1.5">
+    <rect x="852" y="122" width="44" height="14" rx="5"/>
+    <rect x="852" y="140" width="44" height="14" rx="5"/>
+    <rect x="852" y="158" width="44" height="14" rx="5"/>
+  </g>
+  <g fill="#c4b5fd">
+    <circle cx="860" cy="129" r="2.2"/>
+    <circle cx="860" cy="147" r="2.2"/>
+    <circle cx="860" cy="165" r="2.2"/>
+  </g>
+  <text x="908" y="143" font-size="18" font-weight="700" fill="#ddd6fe">Immich</text>
+  <text x="908" y="163" font-size="18" font-weight="700" fill="#ddd6fe">server</text>
+  <text x="852" y="204" font-size="13" fill="#ddd6fe">Your own, self-hosted</text>
+  <text x="852" y="224" font-size="13" fill="#c4b5fd">albums, photos, thumbnails</text>
+
+  <!-- note -->
+  <g font-size="13" fill="#94a3b8">
+    <text x="830" y="294">No backend of its own:</text>
+    <text x="830" y="314">the TV talks straight to</text>
+    <text x="830" y="334">your Immich server.</text>
+  </g>
+</svg>

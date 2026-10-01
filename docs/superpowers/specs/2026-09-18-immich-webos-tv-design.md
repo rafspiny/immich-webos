@@ -62,6 +62,18 @@ A `docs/TESTING.md` (linked from the README) that a non-developer can follow, wr
 8. **Simulator run** (Enact build): same flow in the LG Simulator.
 9. **Report template**: TV model, webOS version, `navigator.userAgent`, step number that failed, `ares-log` output.
 
+## Spec deltas discovered while planning
+
+These refine the approved spec; none changes scope.
+
+1. **Error messages**: the browser cannot tell an untrusted certificate, a CORS block and an offline server apart (XHR `onerror` gives no reason). The app shows one message naming all three, and the README gives the LAN-HTTP test that separates them. The spec's "specific certificate error" is not achievable in a browser.
+2. **Media auth**: images use `?apiKey=` (verified against the live server in Task 6). The prototype's `?key=` is the shared-link parameter.
+3. **Endpoints**: photos-of-everything uses `POST /api/search/metadata` (paged); the prototype's `GET /api/assets?page=` is deprecated.
+4. **Video**: filtered out (`type === 'IMAGE'` only), consistent with "photos and albums" scope.
+5. **Enact shell keyboard**: uses Sandstone's `Input` (the platform keyboard, D-pad navigable on webOS 5+) instead of a custom keyboard; the custom D-pad keyboard is legacy-only where it is the primary path.
+6. **Screens**: no separate Home screen; Albums is the landing screen with an "All photos" entry.
+7. **Legacy settings**: "Photo size" maps to Immich's `thumbnail` / `preview` sizes.
+
 ## Future iteration (not in this plan)
 Map of photo locations; people/faces and per-person photos; username/password login; QR pairing; search.
 
