@@ -26,6 +26,7 @@
         var img = dom.el('img');
         img.src = ctx.client.thumbnailUrl(a.id, view.thumbSize);
         box.appendChild(img);
+        if (a.type === 'VIDEO') { box.appendChild(dom.el('div', 'play-badge')); }
         body.appendChild(box);
         return body;
       },
@@ -42,7 +43,7 @@
       dom.hide(msg);
       grid.setView(view.viewMode, view.columns);
       grid.setItems(items);
-      if (!items.length) { showMsg('No photos here.', false); dom.show(msg); toBar(); return; }
+      if (!items.length) { showMsg('Nothing here yet.', false); dom.show(msg); toBar(); return; }
       zone = 'grid';
       ui.nav.clearFocus();
       grid.focus(index);

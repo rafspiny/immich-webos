@@ -6,7 +6,7 @@ The idea of this app is quite simple. A wrapper, that connects to a remote Immic
 
 The first version is meant to just list albums and show pictures full screen. No local cache for the assets, no meaningful settings except for the dispaly layout. It can display them as a grid or a list, with 3 to 8 columns per row.
 
-Later on, I plan to implement video support, assets cache, search, map, people/faces and some more settings.
+It also lists and plays videos alongside photos. Later on, I plan to implement assets cache, search, map, people/faces and some more settings.
 
 It runs on LG TVs from webOS TV 3.x (2016-17 models) up to current ones. 
 For that, there are two different builds.
@@ -49,23 +49,7 @@ This is pretty much the same permission that the AndroidTV app requires too.
 
 The app is a static web app packaged as an `.ipk` and run by the TV's Web Application Manager (WAM), the standard webOS web-app model. It has no server component of its own: the TV talks directly to your Immich server over its REST API.
 
-![Immich-WebOS Architecture](docs/image/architecture.svg "Architecture")
-```
-                 +---------------------------------------------+
-                 |  core/   (ES5, no DOM, no framework)         |
-                 |  http | settings | paging | immich-client |  |
-                 |  auth                                        |
-                 +----------------------+----------------------+
-                                        |  shared by both
-             +--------------------------+---------------------------+
-             |                                                      |
- +-----------v-------------+                        +---------------v-----------+
- | shell-legacy/           |                        | shell-enact/              |
- | plain ES5 + flexbox,    |                        | Enact Sandstone (React),  |
- | no build step           |                        | VirtualGridList/Spotlight |
- | webOS TV 3.x and newer  |                        | webOS TV 5 and newer      |
- +-------------------------+                        +---------------------------+
-```
+![Architecture: on an LG TV, shell-legacy (plain ES5, webOS TV 3.x and newer) and shell-enact (Enact Sandstone, webOS TV 5 and newer) both sit on the shared ES5 core (http, settings, paging, immich-client, auth), which talks to your Immich server over its REST API.](docs/images/architecture.svg)
 
 **`core/`** holds everything that talks to Immich or keeps state. It has no DOM and no framework, so both shells use it unchanged and it is unit-tested with `node --test`:
 
@@ -74,7 +58,7 @@ The app is a static web app packaged as an `.ipk` and run by the TV's Web Applic
 | `http` | `XMLHttpRequest` wrapper returning Promises (there is no `fetch` on webOS 3.x); timeouts and classified errors (`network`, `timeout`, `unauthorized`, `http`) |
 | `settings` | server address, API key, view mode, columns per row, photo size, remembered server addresses (stored in `localStorage`) |
 | `paging` | loads "All photos" page by page so a whole library is never fetched at once |
-| `immich-client` | albums, album contents, paged photo search, thumbnail and preview URLs; only photos are returned |
+| `immich-client` | albums, album contents, paged photo search, thumbnail and preview URLs; photos and videos are returned (audio and other files are skipped) |
 | `auth` | validates the server address and API key against Immich, and saves them only after a successful check |
 
 **The shells** are thin UIs on top of the core, with the same screens: Setup, Albums, Album, Photo viewer, Settings.
@@ -154,7 +138,7 @@ Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
 
 ### Remote keys
 
-Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next photo.
+Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next item. On a video (legacy build): OK plays/pauses, Up/Down jump 10 seconds.
 
 ## Pairing through the phone: not possible at the moment
 
