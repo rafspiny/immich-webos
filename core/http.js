@@ -32,11 +32,20 @@
           payload = JSON.stringify(opts.body);
           xhr.setRequestHeader('Content-Type', 'application/json');
         }
+        function logHttp(extra) {
+          if (!core.debugLog) { return; }
+          var safeUrl = core.debugLogRedactUrl ? core.debugLogRedactUrl(opts.url) : opts.url;
+          var info = { method: opts.method || 'GET', url: safeUrl };
+          var k;
+          for (k in extra) { if (Object.prototype.hasOwnProperty.call(extra, k)) { info[k] = extra[k]; } }
+          core.debugLog('http', info);
+        }
         xhr.onload = function () {
           var data = null;
           if (xhr.responseText) {
             try { data = JSON.parse(xhr.responseText); } catch (e) { data = null; }
           }
+          logHttp({ status: xhr.status, len: xhr.responseText ? xhr.responseText.length : 0, preview: (xhr.responseText || '').slice(0, 300) });
           if (xhr.status >= 200 && xhr.status < 300) {
             resolve({ status: xhr.status, data: data });
           } else if (xhr.status === 401 || xhr.status === 403) {
@@ -45,8 +54,8 @@
             reject(makeError('http', MESSAGES.http + ' (HTTP ' + xhr.status + ').', xhr.status));
           }
         };
-        xhr.onerror = function () { reject(makeError('network', MESSAGES.network)); };
-        xhr.ontimeout = function () { reject(makeError('timeout', MESSAGES.timeout)); };
+        xhr.onerror = function () { logHttp({ status: 0, error: 'network' }); reject(makeError('network', MESSAGES.network)); };
+        xhr.ontimeout = function () { logHttp({ status: 0, error: 'timeout' }); reject(makeError('timeout', MESSAGES.timeout)); };
         xhr.send(payload);
       });
     }

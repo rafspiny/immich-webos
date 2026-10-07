@@ -58,6 +58,7 @@
       listAlbums: function () {
         return call('GET', '/albums').then(function (list) {
           if (!Array.isArray(list)) { throw invalidResponse(); }
+          if (core.debugLog) { core.debugLog('listAlbums', { count: list.length }); }
           return list.map(function (a) {
             return { id: a.id, name: a.albumName, count: a.assetCount, coverId: a.albumThumbnailAssetId };
           });
@@ -73,6 +74,15 @@
         }
         return call('POST', '/search/metadata', body).then(function (d) {
           if (!isObject(d) || !isObject(d.assets) || !Array.isArray(d.assets.items)) { throw invalidResponse(); }
+          if (core.debugLog) {
+            core.debugLog('searchPage', {
+              page: page,
+              size: size,
+              albumIds: filter && filter.albumIds,
+              itemsLen: d.assets.items.length,
+              nextPage: d.assets.nextPage
+            });
+          }
           var next = d.assets.nextPage;
           return { items: onlyMedia(d.assets.items), nextPage: next ? parseInt(next, 10) : null };
         });
