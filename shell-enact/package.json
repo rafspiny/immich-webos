@@ -10,7 +10,7 @@
 		"pack-p": "node ../tools/sync-core.js && enact pack -p --no-linting",
 		"watch": "node ../tools/sync-core.js && enact pack --watch --no-linting",
 		"clean": "enact clean",
-		"lint": "enact lint .",
+		"lint": "enact lint src/App src/views src/services.js src/index.js src/reportWebVitals.js",
 		"license": "enact license",
 		"test": "enact test",
 		"test-watch": "enact test --watch"
@@ -24,12 +24,6 @@
 	"eslintConfig": {
 		"extends": "enact-proxy"
 	},
-	"eslintIgnore": [
-		"node_modules/*",
-		"build/*",
-		"dist/*",
-		"src/core/*"
-	],
 	"dependencies": {
 		"@enact/core": "^4.9.8",
 		"@enact/i18n": "^4.9.8",
