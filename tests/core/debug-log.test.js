@@ -69,3 +69,8 @@ test('redactUrl hides the api key', function () {
     debugLog.redactUrl('https://s/api/assets/1/thumbnail?size=thumbnail&apiKey=SECRET&x=1'),
     'https://s/api/assets/1/thumbnail?size=thumbnail&apiKey=REDACTED&x=1');
 });
+test('redactUrl hides every apiKey= occurrence, not just the first', function () {
+  assert.strictEqual(
+    debugLog.redactUrl('https://s/a?apiKey=FIRST&x=1&apiKey=SECOND'),
+    'https://s/a?apiKey=REDACTED&x=1&apiKey=REDACTED');
+});

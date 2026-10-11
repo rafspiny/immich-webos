@@ -30,7 +30,7 @@
 
   /* Strip any apiKey=... query value before it is ever logged. */
   function redactUrl(str) {
-    return String(str || '').replace(/([?&]apiKey=)[^&]*/i, '$1REDACTED');
+    return String(str || '').replace(/([?&]apiKey=)[^&]*/gi, '$1REDACTED');
   }
 
   function debugLog(tag, data) {
