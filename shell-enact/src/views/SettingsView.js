@@ -8,6 +8,7 @@ import services from '../services';
 
 const SettingsView = ({nav, params, ...rest}) => {
 	const [view, setView] = useState(services.settings.getView());
+	const [debugOn, setDebugOn] = useState(services.settings.getDebugEnabled());
 	const update = (patch) => {
 		const next = {...view, ...patch};
 		services.settings.saveView(next);
@@ -20,6 +21,17 @@ const SettingsView = ({nav, params, ...rest}) => {
 			<BodyText>Columns per row (grid layout): {view.columns}</BodyText>
 			<Slider min={3} max={8} step={1} value={view.columns} onChange={({value}) => update({columns: value})} />
 			<SwitchItem selected={view.thumbSize === 'preview'} onToggle={({selected}) => update({thumbSize: selected ? 'preview' : 'thumbnail'})}>Large photos (sharper, slower)</SwitchItem>
+			<SwitchItem
+				selected={debugOn}
+				onToggle={({selected}) => {
+					services.settings.setDebugEnabled(selected);
+					services.debugLog.setEnabled(selected);
+					setDebugOn(selected);
+				}}
+			>
+				Debug logging
+			</SwitchItem>
+			<Button onClick={() => nav.push('logs')}>View logs</Button>
 			<Button onClick={() => { services.auth.signOut(); nav.reset('setup'); }}>Sign out and forget the server</Button>
 		</Panel>
 	);

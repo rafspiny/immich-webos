@@ -3,6 +3,7 @@
   var ui = w.ImmichUI, core = w.ImmichCore;
 
   var settings = core.settings.create(core.settings.defaultStorage());
+  core.debugLog.setEnabled(settings.getDebugEnabled());
   var client = core.immichClient.create({ http: core.http, getConfig: settings.getCredentials });
   var auth = core.auth.create({ client: client, settings: settings });
   var ctx = { settings: settings, client: client, auth: auth, app: ui.app };
@@ -12,6 +13,7 @@
   ui.app.register('album', ui.createAlbumView(ctx));
   ui.app.register('viewer', ui.createViewerView(ctx));
   ui.app.register('settings', ui.createSettingsView(ctx));
+  ui.app.register('logs', ui.createLogsView(ctx));
 
   ui.app.start(auth.isConfigured() ? 'albums' : 'setup');
 }(window));

@@ -6,7 +6,7 @@ The idea of this app is quite simple. A wrapper, that connects to a remote Immic
 
 The first version is meant to just list albums and show pictures full screen. No local cache for the assets, no meaningful settings except for the dispaly layout. It can display them as a grid or a list, with 3 to 8 columns per row.
 
-It also lists and plays videos alongside photos. Later on, I plan to implement assets cache, search, map, people/faces and some more settings.
+Later on, I plan to implement video support, assets cache, search, map, people/faces and some more settings.
 
 It runs on LG TVs from webOS TV 3.x (2016-17 models) up to current ones. 
 For that, there are two different builds.
@@ -49,7 +49,8 @@ This is pretty much the same permission that the AndroidTV app requires too.
 
 The app is a static web app packaged as an `.ipk` and run by the TV's Web Application Manager (WAM), the standard webOS web-app model. It has no server component of its own: the TV talks directly to your Immich server over its REST API.
 
-![Architecture: on an LG TV, shell-legacy (plain ES5, webOS TV 3.x and newer) and shell-enact (Enact Sandstone, webOS TV 5 and newer) both sit on the shared ES5 core (http, settings, paging, immich-client, auth), which talks to your Immich server over its REST API.](docs/images/architecture.svg)
+![Immich-WebOS Architecture](docs/images/architecture.svg "Architecture")
+
 
 **`core/`** holds everything that talks to Immich or keeps state. It has no DOM and no framework, so both shells use it unchanged and it is unit-tested with `node --test`:
 
@@ -58,7 +59,7 @@ The app is a static web app packaged as an `.ipk` and run by the TV's Web Applic
 | `http` | `XMLHttpRequest` wrapper returning Promises (there is no `fetch` on webOS 3.x); timeouts and classified errors (`network`, `timeout`, `unauthorized`, `http`) |
 | `settings` | server address, API key, view mode, columns per row, photo size, remembered server addresses (stored in `localStorage`) |
 | `paging` | loads "All photos" page by page so a whole library is never fetched at once |
-| `immich-client` | albums, album contents, paged photo search, thumbnail and preview URLs; photos and videos are returned (audio and other files are skipped) |
+| `immich-client` | albums, album contents, paged photo search, thumbnail and preview URLs; only photos are returned |
 | `auth` | validates the server address and API key against Immich, and saves them only after a successful check |
 
 **The shells** are thin UIs on top of the core, with the same screens: Setup, Albums, Album, Photo viewer, Settings.
@@ -89,78 +90,27 @@ The probe is a tiny app that shows the TV's user agent and which browser feature
 
 ## Develop it
 
-### Setup and commands
-
 Requirements: Node 22.2+, `npm install -g @webos-tools/cli` (gives `ares-*`), `npm install`.
 
-```bash
-npm test                 # lint (ES5), Chromium-38 API gate, unit tests
-npm run serve:legacy     # legacy build at http://localhost:8080 (desktop browser; arrows/Enter/Esc)
-npm run package:legacy   # build/com.immich.webos_<version>_all.ipk
-npm --prefix shell-enact run pack   # Enact build in shell-enact/dist
-```
-`core/` and `shell-legacy/` must stay ES5 with no build step (webOS 3.x = Chromium 38: no `fetch`, `Array.from`, arrow functions, CSS variables or grid). `npm test` enforces this.
+### Build
+There are two builds available/ Legacy and enact.
 
-### Run in the LG Simulator (Linux)
+#### Legacy
+We need to first build the web app, then the ipk file for WebOS, and finally launch the simulator.
+`npm run build:legacy`
+`ares-package dist/legacy -o build`
+`ares-launch -s 22 dist/legacy`
 
-The Simulator offers webOS TV 6.0 and 22-26 only, so it cannot emulate webOS 3.x; use it for the Enact build and for a quick check of the legacy build.
-1. Download the Simulator AppImage from https://webostv.developer.lge.com/develop/tools/simulator-installation, `chmod +x` it.
-2. On Ubuntu 24+ start it directly (ares-launch cannot pass these flags): `./webOS_TV_<ver>_Simulator_*.AppImage --ozone-platform=x11 --no-sandbox`
-3. Launch an app in it: `ares-launch -s 24 dist/legacy` or `ares-launch -s 24 shell-enact/dist`
 
-### Test on a real TV
+### Test
+It is possible to test it in two ways: in a browser and in the WebOS simulator.
 
-1. On the TV install the **Developer Mode** app from the LG Content Store, open it, turn **Dev Mode Status** and **Key Server** ON, note the TV's IP.
-2. On your PC: `ares-setup-device` -> add device (name e.g. `tv`, IP, port `9922`, user `prisoner`), then `ares-device -i tv` to check.
+#### In a web browser
+You can run the webapp in a browser on localhost:8080
+This is useful if you have a test isntance and can change the CORS on immich to allow localhost. Or, alternativately, you like another address that is allowed to fires requests to the immich instance and route it to localhost:8080.
+Of course, the advantage of this approach is the whole suit of Web development and debug facilities you can have in your favourite browser.
 
-**Legacy build (webOS 3.x+ TVs):**
-3. `npm run package:legacy`
-4. `ares-install -d tv build/com.immich.webos_0.2.0_all.ipk`
-5. `ares-launch -d tv com.immich.webos`
+`npm run serve:legacy` and then point your browser to http://localhost:8080
 
-**Enact build (webOS 5+ TVs):**
-3. `npm --prefix shell-enact run pack`
-4. `ares-package shell-enact/dist -o build`
-5. `ares-install -d tv build/com.immich.webos.enact_0.2.0_all.ipk`
-6. `ares-launch -d tv com.immich.webos.enact`
-
-Debug: `ares-inspect -d tv --app <app-id> --open` (needs a Chromium that matches the TV's engine) and `ares-log -d tv <app-id> -f`.
-The Developer Mode session expires after ~50 hours; open the Developer Mode app to extend it.
-Follow [docs/TESTING.md](docs/TESTING.md) for the step-by-step acceptance run.
-
-### Connect to Immich
-
-1. In Immich (any browser): Account Settings > API Keys > New API Key. Copy the key.
-2. On the TV: Setup screen > Server address (`https://photos.example.com` or `http://192.168.1.10:2283`) and API key, entered with the on-screen keyboard (D-pad: arrows move, OK types; "TV keyboard" opens the TV's own).
-3. "Cannot reach the server" means the request failed before any HTTP answer. The browser cannot tell which of these it is: wrong address, TV offline, **HTTPS certificate not trusted by the TV** (2016-17 TVs have an old certificate store; some Let's Encrypt chains fail), or the server blocking the app's `Origin: null` (CORS). Quick test: try `http://<lan-ip>:2283`; if that works the cause is certificate or proxy CORS.
-
-**CORS.** The packaged app runs from `file://`, so its requests carry `Origin: null`, and they send the `x-api-key` header and JSON POSTs, which make the browser issue a CORS preflight (OPTIONS) first. The Immich server or the reverse proxy in front of it must answer that preflight and allow this origin, the methods GET/POST/OPTIONS and the headers `x-api-key` and `content-type`. Verify with Check 7 in docs/immich-api-notes.md. The old prototype docs mentioned an environment variable named `IMMICH_CORS_ALLOWED_ORIGINS`; that name is UNVERIFIED against current Immich, so confirm the correct setting in Immich's documentation for your version rather than relying on it.
-
-### Remote keys
-
-Arrows: move. OK: open/select. Back: previous screen. Back on the first screen exits the app. In the viewer: Left/Right previous/next item. On a video (legacy build): OK plays/pauses, Up/Down jump 10 seconds.
-
-## Pairing through the phone: not possible at the moment
-
-Typing a server address and a long API key with a remote is the least pleasant part of the app. The obvious improvement is a QR code: the TV shows a code, you scan it with the phone that already has Immich, and the TV signs in without you typing anything. **This is not available today**, and the app has no pairing feature. Signing in works only as described in "Connect to Immich" above.
-
-Two variants were considered and researched (full report with sources: [docs/research/2026-09-19-qr-pairing-feasibility.md](docs/research/2026-09-19-qr-pairing-feasibility.md)):
-
-1. **The code carries a device name**, and the official Immich phone app uses it to fetch or create an API key for the TV. **Not possible today.** The official Immich apps have no QR scanner, no device-pairing flow and no Jellyfin-style "quick connect"; the related feature requests were closed as "not planned" or are unimplemented. It would need a change in Immich itself.
-2. **The code carries the API key itself**, and scanning it on the phone "enters" the key so the TV can log in. **Not possible as stated.** At the moment the TV shows its code it has no API key, and Immich, not the TV, generates keys, so a code generated on the TV cannot contain one. The key has to be created where you are logged in to Immich (the web UI; the official phone app cannot create keys) and then travel to the TV. The workable variant turns the idea around: the TV's code carries the address of a pairing page plus a one-time secret, and the key is sent from the phone to the TV.
-
-Why the TV side is hard:
-
-- **The TV cannot receive anything directly.** A web app packaged for webOS cannot listen for incoming connections. An LG representative wrote in September 2024 that "webOS TV cannot be used as a server". Two community webOS apps report QR sign-in through a background JavaScript service bundled with the app, but they require webOS 5 or newer, we have not tested them, and whether such a service can work on webOS 3.x is unverified.
-- **Secrets in transit need care.** Anyone in the room can photograph the code, so it must expire quickly and work only once, and any relay in the middle must not be able to read the key.
-
-**The path we would take, when this is built** (not started; it needs the experiments listed in the report first):
-
-1. A small static pairing page plus a small, self-hostable relay. The TV shows a QR code and waits by polling the relay with plain `XMLHttpRequest`, which works on Chromium 38.
-2. The phone scans the code, opens the pairing page, and the user pastes an API key created in the Immich web UI.
-3. The page encrypts the server address and key with a secret carried in the QR code's URL fragment, which is never sent to a server, so the relay only sees ciphertext. The TV decrypts it and signs in through the existing `core/auth.js`.
-4. Use a separate read-only key per TV (Immich supports permission-scoped, revocable keys from v1.135.0), so it can be revoked later in Immich's settings.
-
-The fallback is the same relay without end-to-end encryption, and below that the current on-screen keyboard, which always stays available. Open questions to test first on a real TV: whether `crypto.subtle` exists on Chromium 38, whether a QR code is readable from the couch at 1080p, the smallest set of API-key permissions this app needs, CORS from a hosted pairing page to Immich, and whether the TV accepts the relay's HTTPS certificate.
-
-Until then, use the API-key flow above; the on-screen keyboard's shortcut keys and remembered server addresses keep it as short as possible.
+#### Simulator
+As described in the Legacy section too, you can runt he simulator using the ares-launch command

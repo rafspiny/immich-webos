@@ -9,7 +9,7 @@
     var inner = dom.el('div', 'grid-inner');
     host.appendChild(inner);
     var items = [], tiles = {};
-    var mode = 'grid', columns = 5, lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0);
+    var mode = 'grid', columns = 5, lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0, opts.rowH);
     var focusIndex = 0, hasFocus = false, scrollTop = 0;
 
     function removeTile(key) {
@@ -21,7 +21,7 @@
       delete tiles[key];
     }
     function addTile(i) {
-      var t = dom.el('div', 'tile' + (mode === 'list' ? ' list' : ''));
+      var t = dom.el('div', 'tile' + (mode === 'list' ? ' list' : '') + (opts.tileClass ? ' ' + opts.tileClass : ''));
       t.style.left = ((i % lay.cols) * lay.cellW) + 'px';
       t.style.top = (Math.floor(i / lay.cols) * lay.cellH) + 'px';
       t.style.width = lay.cellW + 'px';
@@ -46,7 +46,7 @@
     }
     function relayout() {
       Object.keys(tiles).forEach(removeTile);
-      lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0);
+      lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0, opts.rowH);
       inner.style.height = (g.totalRows(items.length, lay.cols) * lay.cellH) + 'px';
       var maxScrollTop = Math.max(0, g.totalRows(items.length, lay.cols) * lay.cellH - host.clientHeight);
       scrollTop = Math.min(scrollTop, maxScrollTop);
@@ -72,7 +72,7 @@
         if (focusIndex > items.length - 1) { focusIndex = Math.max(0, items.length - 1); }
         relayout();
       },
-      setView: function (m, c) { mode = m; columns = c; if (lay) { relayout(); } else { lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0); } },
+      setView: function (m, c) { mode = m; columns = c; if (lay) { relayout(); } else { lay = g.layout(mode, columns, host.clientWidth, opts.captionH || 0, opts.rowH); } },
       focus: function (i) { hasFocus = true; if (items.length > 0) { setFocusIndex(i === undefined ? focusIndex : Math.min(i, Math.max(0, items.length - 1))); } },
       blur: function () { hasFocus = false; if (tiles[focusIndex]) { tiles[focusIndex].classList.remove('focused'); } },
       focusIndex: function () { return focusIndex; },
